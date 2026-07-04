@@ -17,7 +17,8 @@
     "react-activity-calendar": "^3.2.0",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.0",
-    "recharts": "^3.9.0"
+    "recharts": "^3.9.0",
+    "sharp": "^0.35.3"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",
