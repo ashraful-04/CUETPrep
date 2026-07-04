@@ -1,5 +1,7 @@
 const MockTest = require('../models/MockTest');
 const User = require('../models/User');
+const axios = require('axios');
+
 
 // @desc    Generate a mock test using Claude via AIcredits.in
 // @route   POST /api/mocktest/generate
@@ -45,26 +47,25 @@ const generateMockTest = async (req, res) => {
       "correctAnswer" (string, exact match to one of the options),
       "explanation" (string, a brief explanation of why the correct answer is right).`;
 
-      const response = await fetch(`${apiUrl}/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
+      let response;
+      try {
+        response = await axios.post(`${apiUrl}/chat/completions`, {
           model: 'claude-3-haiku-20240307',
           messages: [{ role: 'user', content: prompt }],
           temperature: 0.2
-        })
-      });
-
-      if (!response.ok) {
-        const errBody = await response.text();
-        console.error(`API error for ${sub}: ${response.status} - ${errBody}`);
-        throw new Error(`Failed to generate questions for ${sub} (HTTP ${response.status})`);
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          timeout: 25000 // Increase timeout to 25s
+        });
+      } catch (err) {
+        console.error(`API error for ${sub}:`, err.response?.data || err.message);
+        throw new Error(`Failed to generate questions for ${sub}`);
       }
 
-      const data = await response.json();
+      const data = response.data;
       let content = data.choices[0].message.content.trim();
       
       // Strip markdown code fences if present
