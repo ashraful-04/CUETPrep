@@ -1,0 +1,39 @@
+# Environment files - NEVER commit these
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+
+# Dependencies
+node_modules/
+cuetprep-server/node_modules/
+cuetprep-web/node_modules/
+
+# Build outputs
+cuetprep-web/dist/
+cuetprep-web/dist-ssr/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Temp/test files
+generate_icons.js
+generate_icons.cjs
+test_api.js
+test_log_api.js
+check_db.js
+clean_db.js
+brain.md
+*.html
+CUETPrep_PRD_v2.pdf
+analytics.html
