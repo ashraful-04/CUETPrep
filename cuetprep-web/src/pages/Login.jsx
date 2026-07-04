@@ -122,13 +122,7 @@ export default function Login() {
                     </span>
                   </button>
                 </div>
-                {isLogin && (
-                  <div className="flex justify-end">
-                    <a href="#" className="font-label-md text-label-md text-primary-container hover:underline transition-all">
-                      Forgot Password?
-                    </a>
-                  </div>
-                )}
+
               </div>
               {/* Login Button */}
               <button 
