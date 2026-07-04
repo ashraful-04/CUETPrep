@@ -34,6 +34,6 @@ test_log_api.js
 check_db.js
 clean_db.js
 brain.md
-*.html
+
 CUETPrep_PRD_v2.pdf
 analytics.html
