@@ -253,14 +253,11 @@ export default function MockExam() {
                   Previous
                 </button>
                 <button 
-                  onClick={() => {
-                    if (currentQuestionIndex < totalQuestions - 1) {
-                      setCurrentQuestionIndex(prev => prev + 1);
-                    }
-                  }}
-                  className="px-6 md:px-8 py-2 rounded-lg font-bold bg-primary text-on-primary hover:bg-primary/90 transition-colors shadow-md active:scale-95 text-sm md:text-base"
+                  onClick={() => setCurrentQuestionIndex(prev => Math.min(totalQuestions - 1, prev + 1))}
+                  disabled={currentQuestionIndex === totalQuestions - 1}
+                  className="px-6 md:px-8 py-2 rounded-lg font-bold bg-primary text-on-primary hover:bg-primary/90 transition-colors shadow-md active:scale-95 text-sm md:text-base disabled:opacity-50 disabled:active:scale-100 disabled:hover:bg-primary"
                 >
-                  {currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next'}
+                  Next
                 </button>
               </div>
             </div>
