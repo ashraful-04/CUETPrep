@@ -2,6 +2,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const express = require('express');
+const dns = require('dns');
+
+// Fix for Node.js 18+ fetch ConnectTimeoutError on Render (forces IPv4 first)
+dns.setDefaultResultOrder('ipv4first');
+
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
