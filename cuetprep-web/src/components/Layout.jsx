@@ -361,6 +361,14 @@ export default function Layout({ children }) {
                       })()}
                     </p>
                   </div>
+                  <Link 
+                    to="/settings"
+                    onClick={() => setShowProfileMenu(false)}
+                    className="flex items-center gap-3 px-4 py-2 hover:bg-surface-container-low text-on-surface transition-colors w-full text-left"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">settings</span>
+                    <span className="text-sm font-semibold">Settings</span>
+                  </Link>
                   <button 
                     onClick={() => {
                       setShowProfileMenu(false);
