@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { API_URL } from '../config';
+import { generateMockTestQuestions } from '../utils/aiGenerator';
+
 
 export default function MockSetup() {
   const navigate = useNavigate();
@@ -21,30 +22,12 @@ export default function MockSetup() {
     setIsGenerating(true);
     setError(null);
     try {
-      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      const questions = await generateMockTestQuestions(subject, difficulty, qCount);
       
-      const response = await fetch(`${API_URL}/api/mocktest/generate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userInfo?.token}`
-        },
-        body: JSON.stringify({
-          subjects: subject,
-          difficulty: difficulty,
-          testLength: qCount
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate test. Please check API settings.');
-      }
-
-      const data = await response.json();
       
       // Save current exam state to localStorage so MockExam can pick it up
       localStorage.setItem('currentExam', JSON.stringify({
-        questions: data.questions,
+        questions: questions,
         subject,
         durationSeconds: duration * 60,
         totalQuestions: qCount
