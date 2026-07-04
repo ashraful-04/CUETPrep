@@ -58,7 +58,7 @@ const generateMockTest = async (req, res) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
           },
-          timeout: 25000 // Increase timeout to 25s
+          timeout: 60000 // Increase timeout to 60s for slow AI responses
         });
       } catch (err) {
         console.error(`API error for ${sub}:`, err.response?.data || err.message);
