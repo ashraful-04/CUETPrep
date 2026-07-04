@@ -161,7 +161,7 @@ export default function Login() {
             calendar_today
           </span>
           <span className="font-label-sm text-label-sm text-primary-container font-semibold">
-            245 days to exam
+            {Math.max(0, Math.ceil((new Date('2027-03-01') - new Date()) / (1000 * 60 * 60 * 24)))} days to exam
           </span>
         </div>
       </main>
