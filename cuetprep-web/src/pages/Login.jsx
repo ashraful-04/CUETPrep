@@ -9,11 +9,13 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleAuth = async (e) => {
     e.preventDefault();
     setError('');
+    setIsLoading(true);
     
     const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
     const bodyData = isLogin ? { email, password } : { name, email, password };
@@ -32,9 +34,11 @@ export default function Login() {
         navigate('/dashboard');
       } else {
         setError(data.message || 'Authentication failed');
+        setIsLoading(false);
       }
     } catch (err) {
       setError('Could not connect to server');
+      setIsLoading(false);
     }
   };
 
@@ -127,9 +131,11 @@ export default function Login() {
               {/* Login Button */}
               <button 
                 type="submit"
-                className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white py-4 rounded-xl font-title-lg text-title-lg transition-all active:scale-[0.98] duration-200 shadow-lg shadow-primary-container/20"
+                disabled={isLoading}
+                className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] text-white py-4 rounded-xl font-title-lg text-title-lg transition-all active:scale-[0.98] duration-200 shadow-lg shadow-primary-container/20 flex justify-center items-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed"
               >
-                {isLogin ? 'Login' : 'Sign Up'}
+                {isLoading && <span className="material-symbols-outlined animate-spin text-[24px]">progress_activity</span>}
+                {isLoading ? (isLogin ? 'Logging in...' : 'Signing up...') : (isLogin ? 'Login' : 'Sign Up')}
               </button>
               
               {/* Toggle Mode */}
