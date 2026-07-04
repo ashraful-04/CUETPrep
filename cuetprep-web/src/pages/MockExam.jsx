@@ -139,9 +139,9 @@ export default function MockExam() {
   return (
     <div className="bg-surface-container-low text-on-surface min-h-screen antialiased flex flex-col">
       {/* TopAppBar */}
-      <header className="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center px-4 md:px-margin-desktop h-16">
-        <div className="flex items-center gap-6">
-          <span className="font-headline-md text-headline-md font-bold text-primary">CUETPrep</span>
+      <header className="fixed top-0 w-full z-50 bg-surface border-b border-outline-variant shadow-sm flex justify-between items-center px-2 md:px-margin-desktop h-16">
+        <div className="flex items-center gap-2 md:gap-6 shrink-0">
+          <span className="font-headline-sm md:font-headline-md text-headline-sm md:text-headline-md font-bold text-primary hidden sm:block">CUETPrep</span>
           <div className="hidden md:flex items-center gap-4 text-on-surface-variant font-title-lg">
             <span className="w-1 h-6 bg-outline-variant rounded-full"></span>
             <span className="font-medium">Mock Test</span>
@@ -150,18 +150,18 @@ export default function MockExam() {
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3 bg-primary-container/10 px-4 py-2 rounded-xl border border-primary/20">
-            <span className="material-symbols-outlined text-primary">timer</span>
-            <span className={`font-display text-2xl font-bold tracking-wider ${timeLeft < 300 ? 'text-error animate-pulse' : 'text-primary'}`}>
+        <div className="flex items-center gap-2 md:gap-8 shrink-0">
+          <div className="flex items-center gap-1 md:gap-3 bg-primary-container/10 px-2 md:px-4 py-1.5 md:py-2 rounded-xl border border-primary/20">
+            <span className="material-symbols-outlined text-primary text-[20px] md:text-[24px]">timer</span>
+            <span className={`font-display text-lg md:text-2xl font-bold tracking-wider ${timeLeft < 300 ? 'text-error animate-pulse' : 'text-primary'}`}>
               {formatTime(timeLeft)}
             </span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center">
             <button 
               onClick={submitTest}
               disabled={isSubmitting}
-              className="ml-2 border-2 border-error text-error font-bold px-6 py-2 rounded-lg hover:bg-error hover:text-on-error transition-all duration-200 active:scale-95 disabled:opacity-50"
+              className="border-2 border-error text-error font-bold px-3 md:px-6 py-1.5 md:py-2 rounded-lg hover:bg-error hover:text-on-error transition-all duration-200 active:scale-95 disabled:opacity-50 text-sm md:text-base whitespace-nowrap"
             >
               {isSubmitting ? 'Submitting...' : 'Submit Test'}
             </button>
@@ -232,10 +232,10 @@ export default function MockExam() {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center mt-12 pt-6 border-t border-outline-variant/30">
+            <div className="flex justify-between items-center mt-12 pt-6 border-t border-outline-variant/30 gap-2">
               <button 
                 onClick={toggleMarkForReview}
-                className={`px-6 py-2 rounded-lg font-bold border-2 transition-colors ${
+                className={`px-3 md:px-6 py-2 rounded-lg font-bold border-2 transition-colors text-xs md:text-base text-center leading-tight ${
                   markedForReview[currentQuestionIndex] 
                     ? 'border-tertiary bg-tertiary-container text-on-tertiary-container' 
                     : 'border-outline text-on-surface-variant hover:bg-surface-container-high'
@@ -244,20 +244,23 @@ export default function MockExam() {
                 {markedForReview[currentQuestionIndex] ? 'Unmark Review' : 'Mark for Review'}
               </button>
               
-              <div className="flex gap-4">
+              <div className="flex gap-2 md:gap-4 shrink-0">
                 <button 
                   onClick={() => setCurrentQuestionIndex(prev => Math.max(0, prev - 1))}
                   disabled={currentQuestionIndex === 0}
-                  className="px-6 py-2 rounded-lg font-bold border border-primary text-primary hover:bg-primary/10 disabled:opacity-50"
+                  className="px-3 md:px-6 py-2 rounded-lg font-bold border-2 border-outline-variant text-primary hover:bg-primary/5 transition-colors disabled:opacity-30 disabled:hover:bg-transparent text-sm md:text-base"
                 >
                   Previous
                 </button>
                 <button 
-                  onClick={() => setCurrentQuestionIndex(prev => Math.min(totalQuestions - 1, prev + 1))}
-                  disabled={currentQuestionIndex === totalQuestions - 1}
-                  className="px-6 py-2 rounded-lg font-bold bg-primary text-on-primary hover:bg-primary-container shadow-md disabled:opacity-50"
+                  onClick={() => {
+                    if (currentQuestionIndex < totalQuestions - 1) {
+                      setCurrentQuestionIndex(prev => prev + 1);
+                    }
+                  }}
+                  className="px-6 md:px-8 py-2 rounded-lg font-bold bg-primary text-on-primary hover:bg-primary/90 transition-colors shadow-md active:scale-95 text-sm md:text-base"
                 >
-                  Next
+                  {currentQuestionIndex === totalQuestions - 1 ? 'Finish' : 'Next'}
                 </button>
               </div>
             </div>

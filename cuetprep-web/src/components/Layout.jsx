@@ -244,7 +244,7 @@ export default function Layout({ children }) {
           </div>
 
           {/* Mobile Search Button */}
-          <div className="md:hidden flex items-center justify-center relative" ref={mobileSearchRef}>
+          <div className="md:hidden flex items-center justify-center" ref={mobileSearchRef}>
             <button 
               onClick={() => setShowMobileSearch(!showMobileSearch)}
               className="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-low p-2 rounded-full transition-colors"
@@ -252,7 +252,7 @@ export default function Layout({ children }) {
               search
             </button>
             {showMobileSearch && (
-              <div className="absolute top-12 right-0 w-[85vw] max-w-sm bg-surface-container-lowest rounded-xl custom-shadow border border-outline-variant/30 py-2 z-50">
+              <div className="fixed top-16 left-1/2 -translate-x-1/2 w-[92vw] max-w-sm bg-surface-container-lowest rounded-xl custom-shadow border border-outline-variant/30 py-2 z-[60]">
                 <div className="px-4 py-2 border-b border-outline-variant/30 flex items-center gap-2">
                   <span className="material-symbols-outlined text-on-surface-variant text-[18px]">search</span>
                   <input 

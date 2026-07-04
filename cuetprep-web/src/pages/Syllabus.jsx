@@ -105,11 +105,11 @@ export default function Syllabus() {
   const getStatusBadge = (status) => {
     switch (status) {
       case 'Completed':
-        return <span className="px-3 py-1 rounded-full bg-[#dcfce7] text-[#166534] text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-[#bbf7d0] transition-colors shadow-sm">Completed</span>;
+        return <span className="whitespace-nowrap px-3 py-1 rounded-full bg-[#dcfce7] text-[#166534] text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-[#bbf7d0] transition-colors shadow-sm">Completed</span>;
       case 'In Progress':
-        return <span className="px-3 py-1 rounded-full bg-[#fef3c7] text-[#92400e] text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-[#fde68a] transition-colors shadow-sm">In Progress</span>;
+        return <span className="whitespace-nowrap px-3 py-1 rounded-full bg-[#fef3c7] text-[#92400e] text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-[#fde68a] transition-colors shadow-sm">In Progress</span>;
       default:
-        return <span className="px-3 py-1 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-surface-container-low transition-colors shadow-sm">Not Started</span>;
+        return <span className="whitespace-nowrap px-3 py-1 rounded-full border border-outline-variant bg-surface-container-lowest text-on-surface-variant text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-surface-container-low transition-colors shadow-sm">Not Started</span>;
     }
   };
 
