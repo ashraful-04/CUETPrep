@@ -32,10 +32,12 @@ const generateMockTest = async (req, res) => {
 
     const fullNames = { math: 'Mathematics', computers: 'Computer Science', reasoning: 'Logical Reasoning' };
 
-    // Create parallel requests
-    const aiPromises = subjectArray.map(async (sub, index) => {
+    // Run requests sequentially to prevent rate limiting/queueing timeouts on the API server
+    const resultsArray = [];
+    for (let index = 0; index < subjectArray.length; index++) {
+      const sub = subjectArray[index];
       const qCount = baseQuestions + (index < remainder ? 1 : 0);
-      if (qCount === 0) return []; // Safety check
+      if (qCount === 0) continue; // Safety check
 
       const prompt = `Generate a ${qCount}-question multiple choice test for CUET PG MCA on the subject of "${fullNames[sub]}".
       ${difficultyInstruction}
@@ -58,7 +60,7 @@ const generateMockTest = async (req, res) => {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
           },
-          timeout: 60000 // Increase timeout to 60s for slow AI responses
+          timeout: 90000 // 90 seconds max per subject
         });
       } catch (err) {
         console.error(`API error for ${sub}:`, err.response?.data || err.message);
@@ -82,10 +84,10 @@ const generateMockTest = async (req, res) => {
       
       const parsedQuestions = JSON.parse(jsonMatch[0]);
       // Tag each question with its specific subject id
-      return parsedQuestions.map(q => ({ ...q, subject: sub }));
-    });
+      const taggedQuestions = parsedQuestions.map(q => ({ ...q, subject: sub }));
+      resultsArray.push(taggedQuestions);
+    }
 
-    const resultsArray = await Promise.all(aiPromises);
     // Flatten the array of arrays into a single array of questions
     const questions = resultsArray.flat();
     
