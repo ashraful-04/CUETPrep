@@ -1,4 +1,3 @@
-const cron = require('node-cron');
 const webpush = require('web-push');
 const User = require('../models/User');
 const StudyLog = require('../models/StudyLog');
@@ -57,21 +56,4 @@ const sendStudyReminders = async () => {
   return { total: users.length, sent, skipped };
 };
 
-// Schedule the in-process job. This only fires while the server is awake,
-// so on free hosting the external trigger (POST /api/cron/notify) is the
-// reliable path — this stays as a fallback for always-on environments.
-const startCronJobs = () => {
-  cron.schedule('0 19 * * *', async () => {
-    console.log('[CRON] Running daily 7PM study reminder check...');
-    try {
-      const result = await sendStudyReminders();
-      console.log('[CRON] Reminder run complete:', result);
-    } catch (error) {
-      console.error('[CRON] Error in daily study reminder task:', error);
-    }
-  });
-
-  console.log('[CRON] 7PM Daily Study Reminder scheduled.');
-};
-
-module.exports = { startCronJobs, sendStudyReminders };
+module.exports = { sendStudyReminders };

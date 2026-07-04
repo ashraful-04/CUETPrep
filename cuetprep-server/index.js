@@ -12,7 +12,6 @@ const syllabusRoutes = require('./routes/syllabus');
 const analyticsRoutes = require('./routes/analytics');
 const notificationRoutes = require('./routes/notification');
 const cronRoutes = require('./routes/cron');
-const { startCronJobs } = require('./cron/notificationCron');
 
 // Connect to Database
 connectDB();
@@ -37,9 +36,6 @@ app.use('/api/syllabus', syllabusRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/cron', cronRoutes);
-
-// Start background cron jobs
-startCronJobs();
 
 // Basic Route
 app.get('/', (req, res) => {
