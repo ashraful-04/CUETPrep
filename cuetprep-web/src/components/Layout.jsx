@@ -190,6 +190,24 @@ export default function Layout({ children }) {
     }
   };
 
+  const resetPushSubscription = async () => {
+    try {
+      const registration = await navigator.serviceWorker.getRegistration();
+      if (registration) {
+        const subscription = await registration.pushManager.getSubscription();
+        if (subscription) {
+          await subscription.unsubscribe();
+        }
+        await registration.unregister();
+      }
+      setPermission('default');
+      alert('Notifications reset! Please click "Enable Notifications" again to generate a fresh connection.');
+    } catch (e) {
+      console.error(e);
+      alert('Failed to reset notifications.');
+    }
+  };
+
   return (
     <div className="bg-background text-on-surface min-h-screen">
       {/* TopAppBar */}
@@ -315,7 +333,12 @@ export default function Layout({ children }) {
                     <>
                       <span className="material-symbols-outlined text-4xl text-primary mb-2">notifications_active</span>
                       <p className="text-label-sm text-on-surface-variant">You are subscribed to push notifications.</p>
-                      <p className="text-xs text-on-surface-variant/70 mt-2">Manage notifications in Settings.</p>
+                      <button 
+                        onClick={resetPushSubscription}
+                        className="px-4 py-2 border border-error text-error font-bold rounded-lg text-xs mt-2 hover:bg-error hover:text-white transition-all"
+                      >
+                        Troubleshoot / Reset
+                      </button>
                     </>
                   ) : (
                     <>
