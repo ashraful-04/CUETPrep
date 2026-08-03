@@ -88,8 +88,8 @@ export default function Syllabus() {
     let progressColor = 'bg-primary-container';
     if (sub.name === 'cs') {
       icon = '💻';
-      colorClass = 'bg-tertiary-container text-on-tertiary-container';
-      progressColor = 'bg-tertiary-container';
+      colorClass = 'bg-secondary-container text-on-secondary-container';
+      progressColor = 'bg-primary-container';
     }
     if (sub.name === 'reason') {
       icon = '🧠';
