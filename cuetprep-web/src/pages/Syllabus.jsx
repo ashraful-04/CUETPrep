@@ -86,10 +86,12 @@ export default function Syllabus() {
     let icon = '📐';
     let colorClass = 'bg-secondary-container text-on-secondary-container';
     let progressColor = 'bg-primary-container';
+    let isLowProgress = false;
     if (sub.name === 'cs') {
       icon = '💻';
-      colorClass = percentage < 30 ? 'bg-error-container text-error' : 'bg-tertiary-container text-on-tertiary-container';
-      progressColor = percentage < 30 ? 'bg-error' : 'bg-tertiary-container';
+      colorClass = 'bg-tertiary-container text-on-tertiary-container';
+      progressColor = 'bg-tertiary-container';
+      if (percentage < 30) isLowProgress = true;
     }
     if (sub.name === 'reason') {
       icon = '🧠';
@@ -97,7 +99,7 @@ export default function Syllabus() {
       progressColor = 'bg-primary-container';
     }
 
-    return { ...sub, total, completed, percentage, icon, colorClass, progressColor };
+    return { ...sub, total, completed, percentage, icon, colorClass, progressColor, isLowProgress };
   });
 
   const overallPercentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
@@ -139,11 +141,16 @@ export default function Syllabus() {
             <div key={stat.name} className="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 ambient-shadow hover:scale-[1.02] transition-transform cursor-default">
               <div className="flex justify-between items-start mb-4">
                 <span className="text-3xl">{stat.icon}</span>
-                <span className={`font-label-md text-label-md px-2.5 py-1 rounded-full font-bold ${stat.colorClass}`}>
-                  {stat.percentage < 30 && stat.name === 'cs' ? (
-                    <span className="flex items-center gap-1.5"><span className="material-symbols-outlined text-[16px]">warning</span> Low Progress</span>
-                  ) : stat.displayName}
-                </span>
+                <div className="flex flex-wrap gap-1 justify-end">
+                  <span className={`font-label-md text-label-md px-2.5 py-1 rounded-full font-bold ${stat.colorClass}`}>
+                    {stat.displayName}
+                  </span>
+                  {stat.isLowProgress && (
+                    <span className="flex items-center gap-1 font-label-md text-label-md px-2.5 py-1 rounded-full font-bold bg-error-container text-error">
+                      <span className="material-symbols-outlined text-[14px]">warning</span> Low Progress
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="flex justify-between items-baseline mb-2 mt-6">
                 <span className="font-headline-md text-headline-md font-black">{stat.percentage}%</span>

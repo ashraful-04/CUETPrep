@@ -267,98 +267,129 @@ export default function Dashboard() {
                 <button onClick={() => navigate('/mocktest')} className="text-sm font-bold text-primary hover:underline">Take a Mock Test</button>
               </div>
             </div>
-            <div className="overflow-x-auto flex-1">
-              <table className="w-full text-left border-collapse min-w-[400px]">
-                <thead>
-                  <tr className="text-on-surface-variant border-b border-outline-variant/30">
-                    <th className="pb-4 font-label-md">Date</th>
-                    <th className="pb-4 font-label-md">Activity</th>
-                    <th className="pb-4 font-label-md">Topic</th>
-                    <th className="pb-4 font-label-md">Result / Duration</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-outline-variant/20">
-                  {(() => {
-                    const activities = [
-                      ...(data.recentLogs || []).map(log => ({
-                        id: log._id,
-                        date: new Date(log.date),
-                        type: 'Study Log',
-                        topic: log.subject ? `${log.subject}: ${log.description}` : log.description,
-                        metric: `${log.durationHours.toFixed(1)} hrs`,
-                        icon: 'menu_book',
-                        color: 'text-primary bg-primary/10'
-                      })),
-                      ...(data.mockTests || []).map(test => ({
-                        id: test._id,
-                        date: new Date(test.testDate || test.createdAt || Date.now()),
-                        type: 'Mock Test',
-                        topic: Object.keys(test.sections || {})[0] || 'Mixed Subjects',
-                        metric: `Score: ${Math.max(0, test.score)}/${test.totalQuestions * 4}`,
-                        icon: 'assignment',
-                        color: 'text-tertiary bg-tertiary/10'
-                      }))
-                    ].sort((a, b) => b.date - a.date).slice(0, 8);
+            <div className="flex-1">
+              {(() => {
+                const activities = [
+                  ...(data.recentLogs || []).map(log => ({
+                    id: log._id,
+                    date: new Date(log.date),
+                    type: 'Study Log',
+                    topic: log.subject ? `${log.subject}: ${log.description}` : log.description,
+                    metric: `${log.durationHours.toFixed(1)} hrs`,
+                    icon: 'menu_book',
+                    color: 'text-primary bg-primary/10'
+                  })),
+                  ...(data.mockTests || []).map(test => ({
+                    id: test._id,
+                    date: new Date(test.testDate || test.createdAt || Date.now()),
+                    type: 'Mock Test',
+                    topic: Object.keys(test.sections || {})[0] || 'Mixed Subjects',
+                    metric: `Score: ${Math.max(0, test.score)}/${test.totalQuestions * 4}`,
+                    icon: 'assignment',
+                    color: 'text-tertiary bg-tertiary/10'
+                  }))
+                ].sort((a, b) => b.date - a.date).slice(0, 8);
 
-                    if (activities.length === 0) {
-                      return (
-                        <tr>
-                          <td colSpan="4" className="py-8 text-center text-on-surface-variant">
-                            No recent activity found. Time to hit the books!
-                          </td>
-                        </tr>
-                      );
-                    }
+                if (activities.length === 0) {
+                  return (
+                    <p className="py-8 text-center text-on-surface-variant">
+                      No recent activity found. Time to hit the books!
+                    </p>
+                  );
+                }
 
-                    return activities.map(act => (
-                      <tr 
-                        key={act.id + act.type} 
-                        onClick={() => {
-                          if (act.type === 'Mock Test') {
-                            const fetchTest = async () => {
-                              try {
-                                const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-                                const response = await fetch(`${API_URL}/api/mocktest/${act.id}`, {
-                                  headers: { 'Authorization': `Bearer ${userInfo.token}` }
-                                });
-                                if (response.ok) {
-                                  const testData = await response.json();
-                                  localStorage.setItem('lastTestResult', JSON.stringify(testData));
-                                  navigate('/mocktest/results');
-                                } else {
-                                  alert("Failed to fetch mock test details.");
+                return (
+                  <>
+                    {/* Desktop Table */}
+                    <div className="hidden md:block overflow-x-auto">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="text-on-surface-variant border-b border-outline-variant/30">
+                            <th className="pb-4 font-label-md">Date</th>
+                            <th className="pb-4 font-label-md">Activity</th>
+                            <th className="pb-4 font-label-md">Topic</th>
+                            <th className="pb-4 font-label-md">Result / Duration</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-outline-variant/20">
+                          {activities.map(act => (
+                            <tr
+                              key={act.id + act.type}
+                              onClick={() => {
+                                if (act.type === 'Mock Test') {
+                                  const fetchTest = async () => {
+                                    try {
+                                      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+                                      const response = await fetch(`${API_URL}/api/mocktest/${act.id}`, {
+                                        headers: { 'Authorization': `Bearer ${userInfo.token}` }
+                                      });
+                                      if (response.ok) {
+                                        const testData = await response.json();
+                                        localStorage.setItem('lastTestResult', JSON.stringify(testData));
+                                        navigate('/mocktest/results');
+                                      } else { alert("Failed to fetch mock test details."); }
+                                    } catch (err) { alert("Error fetching mock test."); }
+                                  };
+                                  fetchTest();
                                 }
-                              } catch (err) {
-                                alert("Error fetching mock test.");
-                              }
-                            };
-                            fetchTest();
-                          }
-                        }}
-                        className={`hover:bg-surface-container-low transition-colors group ${act.type === 'Mock Test' ? 'cursor-pointer' : ''}`}
-                      >
-                        <td className="py-4 text-body-md text-on-surface-variant">
-                          {act.date.toLocaleDateString()}
-                        </td>
-                        <td className="py-4">
-                          <div className="flex items-center gap-2">
-                            <span className={`material-symbols-outlined text-[18px] p-1.5 rounded-md ${act.color}`}>
-                              {act.icon}
-                            </span>
-                            <span className="font-bold text-sm text-on-surface">{act.type}</span>
+                              }}
+                              className={`hover:bg-surface-container-low transition-colors ${act.type === 'Mock Test' ? 'cursor-pointer' : ''}`}
+                            >
+                              <td className="py-4 text-body-md text-on-surface-variant">{act.date.toLocaleDateString()}</td>
+                              <td className="py-4">
+                                <div className="flex items-center gap-2">
+                                  <span className={`material-symbols-outlined text-[18px] p-1.5 rounded-md ${act.color}`}>{act.icon}</span>
+                                  <span className="font-bold text-sm text-on-surface">{act.type}</span>
+                                </div>
+                              </td>
+                              <td className="py-4 text-body-md font-medium text-on-surface">{act.topic}</td>
+                              <td className="py-4 font-bold text-on-surface">{act.metric}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* Mobile Card List */}
+                    <div className="md:hidden flex flex-col divide-y divide-outline-variant/20">
+                      {activities.map(act => (
+                        <div
+                          key={act.id + act.type}
+                          onClick={() => {
+                            if (act.type === 'Mock Test') {
+                              const fetchTest = async () => {
+                                try {
+                                  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+                                  const response = await fetch(`${API_URL}/api/mocktest/${act.id}`, {
+                                    headers: { 'Authorization': `Bearer ${userInfo.token}` }
+                                  });
+                                  if (response.ok) {
+                                    const testData = await response.json();
+                                    localStorage.setItem('lastTestResult', JSON.stringify(testData));
+                                    navigate('/mocktest/results');
+                                  } else { alert("Failed to fetch mock test details."); }
+                                } catch (err) { alert("Error fetching mock test."); }
+                              };
+                              fetchTest();
+                            }
+                          }}
+                          className={`py-3 flex items-start gap-3 ${act.type === 'Mock Test' ? 'cursor-pointer' : ''}`}
+                        >
+                          <span className={`material-symbols-outlined text-[20px] p-2 rounded-lg mt-0.5 flex-shrink-0 ${act.color}`}>{act.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="font-bold text-sm text-on-surface">{act.type}</span>
+                              <span className="text-xs text-on-surface-variant flex-shrink-0">{act.date.toLocaleDateString()}</span>
+                            </div>
+                            <p className="text-sm text-on-surface-variant mt-0.5 line-clamp-2">{act.topic}</p>
+                            <span className="text-xs font-bold text-primary mt-1 block">{act.metric}</span>
                           </div>
-                        </td>
-                        <td className="py-4 text-body-md font-medium text-on-surface">
-                          {act.topic}
-                        </td>
-                        <td className="py-4 font-bold text-on-surface">
-                          {act.metric}
-                        </td>
-                      </tr>
-                    ));
-                  })()}
-                </tbody>
-              </table>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                );
+              })()}
             </div>
           </section>
         </div>
